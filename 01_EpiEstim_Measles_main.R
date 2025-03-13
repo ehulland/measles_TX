@@ -30,11 +30,13 @@ ylim.sec <- c(0,200)
 b <- diff(ylim.prim)/diff(ylim.sec)
 a <- ylim.prim[1] - b*ylim.sec[1]
 
-png("~/Measles_TX_cases_by_week.png")
-ggplot(data=dat3)+geom_col(aes(x=Week, y=Weekly_cases), fill='navy')+theme_bw()+
-  geom_line(aes(x=Week, y= a + cum_sum*b), col='orange', lwd=1.5)  + geom_vline(xintercept=as.Date("2025-02-25"), lty=2, col='red', lwd=1.2)+
-scale_y_continuous("Weekly reported measles cases", sec.axis = sec_axis(~ (. - a)/b, name = "Cumulative reported measles cases")) +
-  coord_cartesian(clip = "off", expand=F)
+png("~/Measles_TX_cases_by_week.png", width=700, height=600)
+ggplot(data=dat3)+geom_col(aes(x=Week, y=Weekly_cases), fill='#440154', alpha=0.8)+theme_bw()+
+  geom_line(aes(x=Week, y= a + cum_sum*b), col='#fde725', lwd=1.5)  + geom_vline(xintercept=as.Date("2025-02-25"), lty=2, col='#21918c', lwd=1.2)+
+  scale_y_continuous("Weekly reported measles cases", sec.axis = sec_axis(~ (. - a)/b, name = "Cumulative reported measles cases")) +
+  coord_cartesian(clip = "off", expand=F)+
+  scale_x_date(date_breaks="1 week", date_labels = "%b %d")+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=10),axis.title=element_text(size=14,face="bold"))
 dev.off()
 
 #Priors derived from the literature
@@ -83,7 +85,7 @@ for(i in 1:nrow(grid)){
   r_samp[,VC_025:=(1-(R_025/r0))/0.95*100]
   r_samp[,VC_975:=(1-(R_975/r0))/0.95*100]
   
-
+  
   #get all estimates for the most recent day of data: 
   median<-data.frame(si=si, r0=r0)
   median$median_rt<-r_samp[Date==max(Date), R_median]
@@ -107,7 +109,8 @@ r_samp_df2<-r_samp_df[!is.na(si) & Date>="2025-02-25"]
 png('~/Measles_TX_SI9_SI14.png')
 ggplot(data=r_samp_df2)+geom_line(aes(x=Date, y=R_median,col=factor(si)),lwd=3)+
   geom_ribbon(aes(ymin=R_025, ymax=R_975, x=Date,fill=factor(si)), alpha=0.5)+theme_bw()+
-  scale_color_viridis_d("Serial Interval")+scale_fill_viridis_d("Serial Interval")+ylab("Median Effective Reproductive Number R(t)")+
+  scale_color_viridis_d("Serial interval")+scale_fill_viridis_d("Serial interval")+ylab(expression("Effective reproductive number R"[t]))+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=10),axis.title=element_text(size=14,face="bold"))+
   coord_cartesian(clip = "off", expand=F)
 dev.off()
 
@@ -148,12 +151,12 @@ medians2|>
     c("VC_025","R_025","gap_l") ~ px(150)
   )|>
   cols_label( r0="R(0)",
-             median_rt="Estimated Median R(t)", 
-             R_025='95% UI R(t)',
-             VC_median="Estimated Median Vaccine Coverage",
-             gap="Median gap in coverage to reach 93%",
-             VC_025='95% UI Vaccine Coverage',
-             gap_l="95% UI gap in coverage")|>
+              median_rt="Estimated Median R(t)", 
+              R_025='95% UI R(t)',
+              VC_median="Estimated Median Vaccine Coverage",
+              gap="Median gap in coverage to reach 93%",
+              VC_025='95% UI Vaccine Coverage',
+              gap_l="95% UI gap in coverage")|>
   tab_header(
     title = "Vaccine Coverage for most recent R(t) values\nby Serial Interval and R(0)",
     subtitle = "Using a prior R(0) value  14.5 (SD = 1.5) and vaccine efficacy estimated at 95%")|>
@@ -192,9 +195,10 @@ ggplot(medians2) +
            color = "black", alpha = 0.7, width = 0.6) +
   geom_errorbar(aes(x=si_lab0,ymin = VC_025, ymax = VC_975, group = factor(r0)), 
                 position = position_dodge(0.8), width = 0.2) +
-  scale_fill_viridis_d("Basic reproduction number R(0)") +
+  scale_fill_viridis_d(expression("Basic reproduction number R"[0])) +
   theme_bw()+xlab('Serial Interval')+
-  labs(y = "Estimated Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+
+  labs(y = "Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
   ylim(c(0,100))+coord_cartesian(clip = "off", expand=F)
 dev.off()
 
@@ -204,10 +208,10 @@ png("~/Measles_TX_linechart_vc.png", width=650, height=600)
 ggplot(data=medians2)+geom_line(aes(x=r0, y=VC_median,col=factor(si_lab0)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=r0,fill=factor(si_lab0)), alpha=0.5)+theme_bw()+
   geom_point(aes(x=r0,y=VC_median, col=factor(si_lab0), size=1.5))+
-  scale_color_viridis_d("Serial Interval")+scale_fill_viridis_d("Serial Interval")+ylab("Median Vaccine Coverage (%)")+
+  scale_color_viridis_d("Serial interval")+scale_fill_viridis_d("Serial interval")+ylab("Vaccine coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+
   theme_bw()+scale_size_continuous(guide="none")+annotate(geom="text",x=17, y=94, label="Herd immunity threshold (93%)")+
-  labs(x = "Basic reproduction number R(0)", y = "Estimated Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
+  labs(x = expression("Basic reproduction number R"[0]), y = "Vaccination coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
   
   #add y-axis discontinuity piece using the below:
   scale_y_continuous(limits =c(50, 100),
@@ -229,11 +233,12 @@ dev.off()
 png("~/Measles_TX_timeseries_VC2.png", width=650, height=600)
 ggplot(data=r_samp_df2[si %in% c(14.5)])+geom_line(aes(x=Date, y=VC_median,col=factor(r0)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=Date,fill=factor(r0)), alpha=0.5)+theme_bw()+
-  scale_color_viridis_d("Basic Reproduction Number R(0)")+scale_fill_viridis_d("Basic Reproduction Number R(0)")+ylab("Median Vaccine Coverage (%)")+
+  scale_color_viridis_d(expression("Basic reproduction number R"[0]))+scale_fill_viridis_d(expression("Basic reproduction number R"[0]))+ylab("Vaccine coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+
   theme_bw()+annotate(geom="text",x=as.Date('2025-02-28'), y=94, label="Herd immunity threshold (93%)")+
   scale_y_continuous(limits =c(00, 100))+
-   coord_cartesian(clip = "off", xlim=c(as.Date("2025-02-25"),as.Date("2025-03-11")), expand=F)
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
+  coord_cartesian(clip = "off", xlim=c(as.Date("2025-02-25"),as.Date("2025-03-11")), expand=F)
 dev.off()
 
 
@@ -241,11 +246,12 @@ dev.off()
 r_samp_df2[,si_lab0:=paste("SI", si)]
 r_samp_df2[,si_lab0:=factor(si_lab0, c("SI 9", "SI 14.5"))]
 
-png("~/Measles_TX_timeseries_VC_facets.png", width=850, height=600)
+png("~/Measles_TX_timeseries_VC_facets.png", width=750, height=600)
 ggplot(data=r_samp_df2)+geom_line(aes(x=Date, y=VC_median,col=factor(r0)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=Date,fill=factor(r0)), alpha=0.5)+theme_bw()+
-  scale_color_viridis_d("Basic Reproduction Number R(0)")+scale_fill_viridis_d("Basic Reproduction Number R(0)")+ylab("Median Vaccine Coverage (%)")+
+  scale_color_viridis_d(expression("Basic Reproduction Number R"[0]))+scale_fill_viridis_d(expression("Basic Reproduction Number R"[0]))+ylab("Vaccine coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+facet_wrap(.~si_lab0)+
-  theme_bw()+annotate(geom="text",x=as.Date('2025-03-01'), y=94, label="Herd immunity threshold (93%)")+
-  scale_y_continuous(limits =c(0, 100))+theme(strip.background =element_rect(fill="white"))+ coord_cartesian(clip = "off", expand=F)
+  theme(axis.text.y=element_text(size=14), axis.text.x=element_text(size=12),axis.title=element_text(size=16,face="bold"))+
+  theme_bw()+annotate(geom="text",x=as.Date('2025-03-02'), y=94, label="Herd immunity threshold (93%)")+scale_x_date(breaks="1 week", date_labels = '%b %d')+
+  scale_y_continuous(limits =c(0, 100))+theme(strip.background =element_rect(fill="white"), strip.text =element_text(size=12, face='bold'))+ coord_cartesian(clip = "off", expand=F)
 dev.off()

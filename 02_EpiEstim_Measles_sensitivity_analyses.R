@@ -75,7 +75,8 @@ r_samp_df2<-r_samp_df[!is.na(si) & Date>="2025-02-25"]
 png('~//Measles_TX_bySI_all.png')
 ggplot(data=r_samp_df2)+geom_line(aes(x=Date, y=R_median,col=factor(si)),lwd=3)+
   geom_ribbon(aes(ymin=R_025, ymax=R_975, x=Date,fill=factor(si)), alpha=0.5)+theme_bw()+
-  scale_color_viridis_d("SI")+scale_fill_viridis_d("SI")+ylab("Median R(t)")+
+  scale_color_viridis_d("SI")+scale_fill_viridis_d("SI")+ylab(expression("R"[t]))+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
   coord_cartesian(clip = "off", expand=F)
 dev.off()
 
@@ -87,8 +88,9 @@ r_samp_df2[VC_median<0,VC_median:=0]
 png("~//measles_TX_vaccine_coverage_cropped_all.png", width=1200, height=800)
 ggplot(data=r_samp_df2)+geom_line(aes(x=Date, y=VC_median,col=factor(si)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=Date,fill=factor(si)), alpha=0.5)+theme_bw()+
-  scale_color_viridis_d("SI")+scale_fill_viridis_d("SI")+facet_grid(.~r0)+ylab("Estimated Vaccine/Vaccination Coverage (%)")+
+  scale_color_viridis_d("SI")+scale_fill_viridis_d("SI")+facet_grid(.~r0_lab)+ylab("Vaccination coverage (%)")+
   ylim(c(0,100))+geom_hline(aes(x=Date, yintercept=93), lty=2)+ theme(axis.text.x = element_text(angle = 45, vjust=0.5))+
+  theme(axis.text.y=element_text(size=12), axis.title=element_text(size=14,face="bold"))+
   scale_x_date(date_breaks='1 week', date_labels="%b %d")+theme(strip.background =element_rect(fill="white"))+  coord_cartesian(clip = "off", expand=F)
 dev.off()
 
@@ -114,9 +116,10 @@ ggplot(medians2) +
            color = "black", alpha = 0.7, width = 0.6) +
   geom_errorbar(aes(x=si_lab,ymin = VC_025, ymax = VC_975, group = factor(r0f)), 
                 position = position_dodge(0.8), width = 0.2) +
-  scale_fill_viridis_d("R(0)") +
-  theme_bw()+xlab('Serial Interval')+
-  labs(x = NULL, y = "Estimated Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+
+  scale_fill_viridis_d(expression("R"[0])) +
+  theme_bw()+xlab('Serial interval')+
+  labs(x = NULL, y = "Vaccination coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
   theme(axis.text.x = element_text(angle = 45, vjust=0.5))+  coord_cartesian(clip = "off", expand=F)+
   ylim(c(0,100))
 dev.off()
@@ -128,10 +131,13 @@ png("~//Measles_TX_linechart_vc_multi.png", width=650, height=600)
 ggplot(data=medians3[si_lab %in% c("SI 9","SI 14.5")])+geom_line(aes(x=r0, y=VC_median,col=factor(si_lab)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=r0,fill=factor(si_lab)), alpha=0.5)+theme_bw()+
   geom_point(aes(x=r0,y=VC_median, col=factor(si_lab), size=factor(size)))+
-  scale_color_viridis_d("Serial Interval", direction = 1)+scale_fill_viridis_d("Serial Interval", direction=1)+ylab("Median Vaccine Coverage (%)")+
+  scale_color_viridis_d("Serial interval", direction = 1)+scale_fill_viridis_d("Serial interval", direction=1)+ylab("Vaccination coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+scale_size_manual(guide="none", values=c(NA,5))+
   theme_bw()+annotate(geom="text",x=17, y=94, label="Herd immunity threshold (93%)")+
-  labs(x = "R(0)", y = "Estimated Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
+  
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
+  labs(x = expression("R"[0]), y = "Vaccination coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
   scale_y_continuous(limits =c(50, 100),
                      breaks = seq(50, 100, by = 10),
                      labels = c(0, seq(60, 100, by = 10)))+
@@ -151,10 +157,11 @@ png("~//Measles_TX_linechart_vc_multi_ALL.png", width=600, height=400)
 ggplot(data=medians2[si_lab %in% c("SI 9","SI 14.5")])+geom_line(aes(x=r0, y=VC_median,col=factor(si_lab)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=r0,fill=factor(si_lab)), alpha=0.5)+theme_bw()+
   geom_point(aes(x=r0,y=VC_median, col=factor(si_lab), size=factor(size)))+
-  scale_color_viridis_d("Serial Interval")+scale_fill_viridis_d("Serial Interval")+ylab("Median Vaccine Coverage (%)")+
+  scale_color_viridis_d("Serial Interval")+scale_fill_viridis_d("Serial Interval")+ylab("Vaccination coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+scale_size_manual(guide="none", values=c(1,3))+
   theme_bw()+annotate(geom="text",x=13, y=94, label="Herd immunity threshold (93%)")+
-  labs(x = "R(0)", y = "Estimated Vaccination Coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
+  theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
+  labs(x = expression("R"[0]), y = "Vaccination coverage (%)") + geom_hline(aes(yintercept=93),lty=2)+ theme(axis.line = element_line())+
   scale_y_continuous(limits =c(50, 100),
                      breaks = seq(50, 100, by = 10),
                      labels = c(0, seq(60, 100, by = 10)))+
