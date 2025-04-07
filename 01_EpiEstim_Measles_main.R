@@ -28,7 +28,7 @@ dat3[,Weekly_cases:=(Weekly_cases/ 31290831)*100000]
 
 #scaling for two axes
 ylim.prim <- c(0, 0.2)
-ylim.sec <- c(0,200) 
+ylim.sec <- c(0,250) 
 b <- diff(ylim.prim)/diff(ylim.sec)
 a <- ylim.prim[1] - b*ylim.sec[1]
 
