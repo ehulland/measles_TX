@@ -297,14 +297,14 @@ dev.off()
 
 #line plot of VC over time for various R0 values (SI of 14.5 ) 
 png("~/Measles_TX_timeseries_VC2_1daysens.png", width=650, height=600)
-ggplot(data=r_samp_df2[si %in% c(14.5)])+geom_line(aes(x=Date, y=VC_median,col=factor(r0)),lwd=3)+
+ggplot(data=r_samp_df2[si %in% c(14.5)] & Date<="2025-03-12")+geom_line(aes(x=Date, y=VC_median,col=factor(r0)),lwd=3)+
   geom_ribbon(aes(ymax=VC_025, ymin=VC_975, x=Date,fill=factor(r0)), alpha=0.5)+theme_bw()+
   scale_color_viridis_d(expression("Basic reproduction number R"[0]))+scale_fill_viridis_d(expression("Basic reproduction number R"[0]))+ylab("Vaccine coverage (%)")+
   geom_hline(aes(yintercept=93), lty=2)+
   theme_bw()+annotate(geom="text",x=as.Date('2025-02-28'), y=94, label="Herd immunity threshold (93%)")+
   scale_y_continuous(limits =c(00, 100))+
   theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=12),axis.title=element_text(size=14,face="bold"))+
-  coord_cartesian(clip = "off", xlim=c(as.Date("2025-02-25"),as.Date("2025-03-12")), expand=F)
+  coord_cartesian(clip = "off", xlim=c(as.Date("2025-02-25"),as.Date("2025-03-11")), expand=F)
 dev.off()
 
 
