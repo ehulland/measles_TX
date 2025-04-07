@@ -22,10 +22,12 @@ dat3<-dat2[,.(Weekly_cases, Week)]
 dat3<-dat3[!duplicated(dat3)]
 dat3[,cum_sum:=cumsum(Weekly_cases)]
 
-#plot incident vs cumulative weekly cases (Figure 1 in text)
+#plot incident vs cumulative weekly cases (Figure 1 in supplement)
+#use TX population to get weekly incidence per 100,000 population
+dat3[,Weekly_cases:=(Weekly_cases/ 31290831)*100000]
 
 #scaling for two axes
-ylim.prim <- c(0, 60)
+ylim.prim <- c(0, 0.2)
 ylim.sec <- c(0,200) 
 b <- diff(ylim.prim)/diff(ylim.sec)
 a <- ylim.prim[1] - b*ylim.sec[1]
@@ -33,7 +35,7 @@ a <- ylim.prim[1] - b*ylim.sec[1]
 png("~/Measles_TX_cases_by_week.png", width=700, height=600)
 ggplot(data=dat3)+geom_col(aes(x=Week, y=Weekly_cases), fill='#440154', alpha=0.8)+theme_bw()+
   geom_line(aes(x=Week, y= a + cum_sum*b), col='#fde725', lwd=1.5)  + geom_vline(xintercept=as.Date("2025-02-25"), lty=2, col='#21918c', lwd=1.2)+
-  scale_y_continuous("Weekly reported measles cases", sec.axis = sec_axis(~ (. - a)/b, name = "Cumulative reported measles cases")) +
+  scale_y_continuous("Weekly reported measles cases (per 100,000 population)", sec.axis = sec_axis(~ (. - a)/b, name = "Cumulative reported measles cases")) +
   coord_cartesian(clip = "off", expand=F)+
   scale_x_date(date_breaks="1 week", date_labels = "%b %d")+
   theme(axis.text.y=element_text(size=12), axis.text.x=element_text(size=10),axis.title=element_text(size=14,face="bold"))
