@@ -9,4 +9,5 @@ To ensure our results are timely and relevant, we will make every effort to rout
 
 * As of June 18th, NBC and CBS news do not routinely update their counts so data are pulled directly from public state departments of health and may be slightly discrepant to values reported to the CDC.
 * As of June 10th, Texas DSHS appears to only report once-weekly, on Tuesdays
-* As of June 25th, CDC will update their page on Wednesdays in lieu of Fridays, which will include data reported to the CDC through noon on Tuesdays. 
+* As of June 25th, CDC will update their page on Wednesdays in lieu of Fridays, which will include data reported to the CDC through noon on Tuesdays.
+* As of August 18th, Texas reports the end of the West Texas outbreak with a sum of 762 cases. https://www.dshs.texas.gov/news-alerts/texas-announces-end-west-texas-measles-outbreak 
