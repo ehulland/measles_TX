@@ -12,4 +12,4 @@ To ensure our results are timely and relevant, we will make every effort to rout
 * As of June 25th, CDC will update their page on Wednesdays in lieu of Fridays, which will include data reported to the CDC through noon on Tuesdays.
 * As of August 18th, Texas reports the end of the West Texas outbreak with a sum of 762 cases. https://www.dshs.texas.gov/news-alerts/texas-announces-end-west-texas-measles-outbreak
 * As of September 3, CDC now reports exact counts per state. Given that there are not time series data per state available, where case counts differ, we defer to the department of health in each state and historic reports.
-* As of January 23, 2026, CDC reports on Fridays. We have adjusted our reporting cadence accordingly.
+* As of January 23, 2026, CDC reports on Fridays. We have adjusted our reporting cadence accordingly and post updates early Monday.
